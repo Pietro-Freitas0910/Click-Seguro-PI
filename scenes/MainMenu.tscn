@@ -1,0 +1,228 @@
+[gd_scene format=3 uid="uid://25jt3jvfjpgx"]
+
+[ext_resource type="Script" uid="uid://b06eug5v0xghh" path="res://scripts/MainMenu.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://bt6bgb1304ckm" path="res://scripts/TechBackground.gd" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://dne4fpqjh0ytv" path="res://assets/security_center_reference.jpeg" id="3_security_center"]
+[ext_resource type="Theme" path="res://assets/ui/pixel_theme.tres" id="6_pixel_theme"]
+[ext_resource type="Script" uid="uid://du383mopiiqhf" path="res://scripts/PixelOverlay.gd" id="7_pixel_overlay"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_monitor"]
+bg_color = Color(0.004, 0.02, 0.042, 0.7)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.08, 0.68, 1, 0.82)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.03, 0.72, 1, 0.28)
+shadow_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_status"]
+font_size = 18
+font_color = Color(0.15, 0.82, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 78
+font_color = Color(0.42, 1, 0.76, 1)
+outline_size = 5
+outline_color = Color(0, 0.02, 0.04, 0.9)
+
+[sub_resource type="LabelSettings" id="LabelSettings_subtitle"]
+font_size = 26
+font_color = Color(0.82, 0.95, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_code"]
+font_color = Color(0.3, 1, 0.68, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_action_frame"]
+bg_color = Color(0.008, 0.015, 0.026, 0.82)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.08, 0.7, 1, 0.72)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.02, 0.7, 1, 0.2)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
+bg_color = Color(0.014, 0.08, 0.13, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.08, 0.65, 1, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.08, 0.25, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 1, 0.8, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.016, 0.18, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.22, 1, 0.58, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.18, 1, 0.62, 0.34)
+shadow_size = 8
+
+[node name="MainMenu" type="Control" unique_id=504254093]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_pixel_theme")
+script = ExtResource("1_main")
+
+[node name="Background" type="Control" parent="." unique_id=162807245]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_bg")
+
+[node name="ReferenceMood" type="TextureRect" parent="." unique_id=1862843615]
+modulate = Color(0.9, 1, 1, 0.94)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_security_center")
+expand_mode = 1
+
+[node name="Shade" type="ColorRect" parent="." unique_id=911820345]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.006, 0.014, 0.22)
+
+[node name="MonitorPanel" type="PanelContainer" parent="." unique_id=2072701866]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.135
+anchor_top = 0.055
+anchor_right = 0.89
+anchor_bottom = 0.535
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_monitor")
+
+[node name="MenuVBox" type="VBoxContainer" parent="MonitorPanel" unique_id=665264753]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="MonitorPanel/MenuVBox" unique_id=1311307047]
+layout_mode = 2
+text = "CENTRAL DE DEFESA DIGITAL"
+label_settings = SubResource("LabelSettings_status")
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="MonitorPanel/MenuVBox" unique_id=1554573787]
+layout_mode = 2
+text = "Click Seguro"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+
+[node name="HeaderLine" type="ColorRect" parent="MonitorPanel/MenuVBox" unique_id=1354292758]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(0.12, 0.76, 1, 0.95)
+
+[node name="SubtitleLabel" type="Label" parent="MonitorPanel/MenuVBox" unique_id=266617682]
+layout_mode = 2
+text = "Cada escolha protege seus dados."
+label_settings = SubResource("LabelSettings_subtitle")
+horizontal_alignment = 1
+
+[node name="CodeLabel" type="Label" parent="MonitorPanel/MenuVBox" unique_id=1895373082]
+layout_mode = 2
+text = "FIREWALL ONLINE // GOLPES MONITORADOS // DADOS SOB PROTECAO"
+label_settings = SubResource("LabelSettings_code")
+horizontal_alignment = 1
+
+[node name="ActionFrame" type="PanelContainer" parent="." unique_id=1784480671]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36
+anchor_top = 0.69
+anchor_right = 0.67
+anchor_bottom = 0.92
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_action_frame")
+
+[node name="ButtonVBox" type="VBoxContainer" parent="ActionFrame" unique_id=1126667557]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="ActionFrame/ButtonVBox" unique_id=1638216665]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 1, 0.94, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.42, 1, 0.72, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "INICIAR DEFESA"
+
+[node name="ExitButton" type="Button" parent="ActionFrame/ButtonVBox" unique_id=1406837937]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 0.36, 0.36, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "SAIR DO SISTEMA"
+
+[node name="PixelOverlay" type="Control" parent="." unique_id=161043546]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_pixel_overlay")

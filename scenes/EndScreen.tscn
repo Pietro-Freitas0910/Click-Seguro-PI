@@ -1,0 +1,288 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://scripts/EndScreen.gd" id="1_end"]
+[ext_resource type="Script" path="res://scripts/TechBackground.gd" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/security_center_reference.jpeg" id="3_security_center"]
+[ext_resource type="Texture2D" path="res://assets/defender_spritesheet.png" id="4_defender_sheet"]
+[ext_resource type="Texture2D" path="res://assets/hacker_spritesheet.png" id="5_hacker_sheet"]
+[ext_resource type="Theme" path="res://assets/ui/pixel_theme.tres" id="6_pixel_theme"]
+[ext_resource type="Script" path="res://scripts/TypewriterLabel.gd" id="7_typewriter"]
+[ext_resource type="Script" path="res://scripts/DefenderVisual.gd" id="8_defender_visual"]
+[ext_resource type="Script" path="res://scripts/PixelOverlay.gd" id="9_pixel_overlay"]
+[ext_resource type="Script" path="res://scripts/HackerVisual.gd" id="10_hacker_visual"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_end"]
+bg_color = Color(0.004, 0.02, 0.042, 0.76)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.12, 0.85, 1, 0.88)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.02, 0.85, 1, 0.25)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_action_frame"]
+bg_color = Color(0.008, 0.015, 0.026, 0.82)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.08, 0.7, 1, 0.72)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.02, 0.7, 1, 0.2)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
+bg_color = Color(0.014, 0.08, 0.13, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.1, 0.72, 1, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.016, 0.18, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.28, 1, 0.62, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.18, 1, 0.62, 0.34)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.08, 0.25, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 1, 0.78, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="LabelSettings" id="LabelSettings_result"]
+font_size = 42
+font_color = Color(0.47, 1, 0.82, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 0.72)
+
+[sub_resource type="LabelSettings" id="LabelSettings_score"]
+font_size = 27
+font_color = Color(0.88, 0.97, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_status"]
+font_size = 24
+font_color = Color(0.18, 0.9, 1, 1)
+
+[node name="EndScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_pixel_theme")
+script = ExtResource("1_end")
+
+[node name="Background" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_bg")
+
+[node name="SecurityCenterMood" type="TextureRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(0.9, 1, 1, 0.92)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_security_center")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="ResultOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.01, 0.02, 0.26)
+
+[node name="EndPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.135
+anchor_top = 0.055
+anchor_right = 0.89
+anchor_bottom = 0.535
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 38
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 38
+theme_override_constants/margin_bottom = 30
+theme_override_styles/panel = SubResource("StyleBoxFlat_end")
+
+[node name="VBox" type="VBoxContainer" parent="EndPanel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="EndPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SISTEMA"
+label_settings = SubResource("LabelSettings_status")
+horizontal_alignment = 1
+
+[node name="StatusLine" type="ColorRect" parent="EndPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(0.12, 0.75, 1, 0.9)
+
+[node name="ResultLabel" type="Label" parent="EndPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Resultado"
+label_settings = SubResource("LabelSettings_result")
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("7_typewriter")
+text_speed = 0.014
+
+[node name="FinalScoreLabel" type="Label" parent="EndPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pontuacao final: 0"
+label_settings = SubResource("LabelSettings_score")
+horizontal_alignment = 1
+script = ExtResource("7_typewriter")
+text_speed = 0.012
+
+[node name="HackerVisual" type="TextureRect" parent="."]
+unique_name_in_owner = true
+z_index = 1
+modulate = Color(0.72, 1, 0.9, 0.82)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.035
+anchor_top = 0.56
+anchor_right = 0.305
+anchor_bottom = 0.965
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_hacker_sheet")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("10_hacker_visual")
+sprite_sheet = ExtResource("5_hacker_sheet")
+state = "idle"
+jitter_strength = 1.8
+
+[node name="DefenderVisual" type="TextureRect" parent="."]
+unique_name_in_owner = true
+z_index = 1
+modulate = Color(0.9, 1, 0.96, 0.92)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.675
+anchor_top = 0.56
+anchor_right = 0.985
+anchor_bottom = 0.99
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_defender_sheet")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("8_defender_visual")
+sprite_sheet = ExtResource("4_defender_sheet")
+state = "idle"
+jitter_strength = 1.8
+
+[node name="ActionFrame" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36
+anchor_top = 0.69
+anchor_right = 0.67
+anchor_bottom = 0.92
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+theme_override_styles/panel = SubResource("StyleBoxFlat_action_frame")
+
+[node name="ButtonVBox" type="VBoxContainer" parent="ActionFrame"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="ActionFrame/ButtonVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(0.42, 1, 0.72, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+text = "JOGAR NOVAMENTE"
+
+[node name="MenuButton" type="Button" parent="ActionFrame/ButtonVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(0.42, 1, 0.72, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+text = "VOLTAR AO MENU"
+
+[node name="PixelOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_pixel_overlay")

@@ -1,0 +1,512 @@
+[gd_scene load_steps=26 format=3]
+
+[ext_resource type="Script" path="res://scripts/Game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scripts/TechBackground.gd" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/security_center_reference.jpeg" id="3_security_center"]
+[ext_resource type="Texture2D" path="res://assets/defender_spritesheet.png" id="4_defender_sheet"]
+[ext_resource type="Texture2D" path="res://assets/hacker_spritesheet.png" id="5_hacker_sheet"]
+[ext_resource type="Theme" path="res://assets/ui/pixel_theme.tres" id="6_pixel_theme"]
+[ext_resource type="Script" path="res://scripts/TypewriterLabel.gd" id="7_typewriter"]
+[ext_resource type="Script" path="res://scripts/DefenderVisual.gd" id="8_defender_visual"]
+[ext_resource type="Script" path="res://scripts/PixelOverlay.gd" id="9_pixel_overlay"]
+[ext_resource type="Script" path="res://scripts/HackerVisual.gd" id="10_hacker_visual"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_monitor"]
+bg_color = Color(0.004, 0.02, 0.042, 0.72)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.08, 0.68, 1, 0.82)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.03, 0.72, 1, 0.28)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_taskbar"]
+bg_color = Color(0.005, 0.028, 0.052, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.72, 1, 0.64)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feedback"]
+bg_color = Color(0.015, 0.07, 0.11, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.82, 1, 0.75)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_action_frame"]
+bg_color = Color(0.008, 0.015, 0.026, 0.82)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.08, 0.7, 1, 0.72)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.02, 0.7, 1, 0.2)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_threat_bg"]
+bg_color = Color(0.035, 0, 0.006, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.04, 0.09, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_threat_fill"]
+bg_color = Color(1, 0.04, 0.08, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
+bg_color = Color(0.014, 0.08, 0.13, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.08, 0.65, 1, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.016, 0.18, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.22, 1, 0.58, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.18, 1, 0.62, 0.34)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.08, 0.25, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 1, 0.8, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_disabled"]
+bg_color = Color(0.035, 0.045, 0.055, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.32, 0.36, 0.4, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 24
+font_color = Color(0.42, 1, 0.72, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.75)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hud"]
+font_size = 18
+font_color = Color(0.88, 0.97, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_small"]
+font_size = 15
+font_color = Color(0.5, 0.9, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_challenge"]
+font_size = 28
+font_color = Color(0.92, 0.99, 1, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.75)
+
+[sub_resource type="LabelSettings" id="LabelSettings_feedback"]
+font_size = 20
+font_color = Color(0.78, 0.94, 1, 1)
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_pixel_theme")
+script = ExtResource("1_game")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_bg")
+
+[node name="SecurityCenterMood" type="TextureRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(0.9, 1, 1, 0.92)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_security_center")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SceneShade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.006, 0.014, 0.18)
+
+[node name="MonitorPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.135
+anchor_top = 0.035
+anchor_right = 0.89
+anchor_bottom = 0.545
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 14
+theme_override_styles/panel = SubResource("StyleBoxFlat_monitor")
+
+[node name="MonitorVBox" type="VBoxContainer" parent="MonitorPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopBar" type="HBoxContainer" parent="MonitorPanel/MonitorVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WindowTitleLabel" type="Label" parent="MonitorPanel/MonitorVBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CLICK SEGURO // CENTRAL DE DEFESA"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="ChallengeCounterLabel" type="Label" parent="MonitorPanel/MonitorVBox/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Desafio 1/6"
+label_settings = SubResource("LabelSettings_hud")
+horizontal_alignment = 2
+
+[node name="ChallengeTextLabel" type="Label" parent="MonitorPanel/MonitorVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Texto do desafio atual"
+label_settings = SubResource("LabelSettings_challenge")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("7_typewriter")
+text_speed = 0.012
+
+[node name="FeedbackPanel" type="PanelContainer" parent="MonitorPanel/MonitorVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_feedback")
+
+[node name="FeedbackLabel" type="Label" parent="MonitorPanel/MonitorVBox/FeedbackPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Escolha a acao mais segura."
+label_settings = SubResource("LabelSettings_feedback")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("7_typewriter")
+text_speed = 0.01
+
+[node name="TaskbarPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.155
+anchor_top = 0.505
+anchor_right = 0.87
+anchor_bottom = 0.585
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_taskbar")
+
+[node name="Hud" type="HBoxContainer" parent="TaskbarPanel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="ScoreLabel" type="Label" parent="TaskbarPanel/Hud"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pontuacao: 0"
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(0.32, 1, 0.62, 1)
+
+[node name="LivesLabel" type="Label" parent="TaskbarPanel/Hud"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vidas: 3"
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(0.7, 0.94, 1, 1)
+horizontal_alignment = 1
+
+[node name="SystemLabel" type="Label" parent="TaskbarPanel/Hud"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FIREWALL: ONLINE"
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(0.3, 1, 0.8, 1)
+horizontal_alignment = 2
+
+[node name="ThreatPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36
+anchor_top = 0.595
+anchor_right = 0.675
+anchor_bottom = 0.675
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+theme_override_styles/panel = SubResource("StyleBoxFlat_taskbar")
+
+[node name="ThreatVBox" type="VBoxContainer" parent="ThreatPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ThreatPulse" type="ColorRect" parent="ThreatPanel/ThreatVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(1, 0.05, 0.08, 0.16)
+
+[node name="ThreatBar" type="ProgressBar" parent="ThreatPanel/ThreatVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+max_value = 100.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBoxFlat_threat_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_threat_fill")
+
+[node name="ActionsFrame" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.305
+anchor_top = 0.69
+anchor_right = 0.73
+anchor_bottom = 0.965
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+theme_override_styles/panel = SubResource("StyleBoxFlat_action_frame")
+
+[node name="ActionsGrid" type="GridContainer" parent="ActionsFrame"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="AbrirButton" type="Button" parent="ActionsFrame/ActionsGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.75, 0.72, 1)
+theme_override_colors/font_hover_color = Color(1, 0.35, 0.35, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.48, 0.54, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_button_disabled")
+text = "ABRIR"
+
+[node name="IgnorarButton" type="Button" parent="ActionsFrame/ActionsGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.9, 0.42, 1)
+theme_override_colors/font_hover_color = Color(1, 0.78, 0.2, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.48, 0.54, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_button_disabled")
+text = "IGNORAR"
+
+[node name="DenunciarButton" type="Button" parent="ActionsFrame/ActionsGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.42, 1, 0.72, 1)
+theme_override_colors/font_hover_color = Color(0.22, 1, 0.58, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.48, 0.54, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_button_disabled")
+text = "DENUNCIAR"
+
+[node name="BloquearButton" type="Button" parent="ActionsFrame/ActionsGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.54, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(0.34, 0.82, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.48, 0.54, 0.58, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_button_disabled")
+text = "BLOQUEAR"
+
+[node name="HackerVisual" type="TextureRect" parent="."]
+unique_name_in_owner = true
+z_index = 1
+modulate = Color(0.72, 1, 0.9, 0.82)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.035
+anchor_top = 0.56
+anchor_right = 0.305
+anchor_bottom = 0.965
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_hacker_sheet")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("10_hacker_visual")
+sprite_sheet = ExtResource("5_hacker_sheet")
+state = "idle"
+jitter_strength = 1.8
+
+[node name="DefenderVisual" type="TextureRect" parent="."]
+unique_name_in_owner = true
+z_index = 1
+modulate = Color(0.9, 1, 0.96, 0.92)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.675
+anchor_top = 0.56
+anchor_right = 0.985
+anchor_bottom = 0.99
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_defender_sheet")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("8_defender_visual")
+sprite_sheet = ExtResource("4_defender_sheet")
+state = "typing"
+jitter_strength = 1.5
+
+[node name="DangerOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.02, 0.06, 0.42)
+
+[node name="ShieldOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 1, 0.55, 0.28)
+
+[node name="PixelOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_pixel_overlay")
