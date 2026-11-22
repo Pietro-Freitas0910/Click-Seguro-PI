@@ -1,0 +1,132 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/stage.gd" id="1_stage"]
+[ext_resource type="Texture2D" path="res://assets/images/background.jpeg" id="2_background"]
+[ext_resource type="PackedScene" path="res://scenes/components/scene_character.tscn" id="3_character"]
+[ext_resource type="Texture2D" path="res://assets/sprites/hacker_mask.png" id="4_hacker_mask"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/hacker_frames.tres" id="5_hacker_frames"]
+[ext_resource type="Texture2D" path="res://assets/sprites/defender_mask.png" id="6_defender_mask"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/defender_frames.tres" id="7_defender_frames"]
+[ext_resource type="Texture2D" path="res://assets/images/lock_green.png" id="8_lock_green"]
+[ext_resource type="Texture2D" path="res://assets/images/lock_yellow.png" id="9_lock_yellow"]
+[ext_resource type="Texture2D" path="res://assets/images/lock_red.png" id="10_lock_red"]
+[ext_resource type="Texture2D" path="res://assets/images/booth_left.png" id="11_booth_left"]
+[ext_resource type="Texture2D" path="res://assets/images/booth_right.png" id="12_booth_right"]
+
+[sub_resource type="AtlasTexture" id="wall"]
+atlas = ExtResource("2_background")
+region = Rect2(0, 0, 1536, 560)
+
+[node name="Stage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_stage")
+
+[node name="Floor" type="ColorRect" parent="."]
+layout_mode = 0
+offset_top = 480.0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.022, 0.05, 0.104, 1)
+
+[node name="Wall" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -51.2
+offset_top = -21.6
+offset_right = 1331.2
+offset_bottom = 482.4
+mouse_filter = 2
+texture = SubResource("wall")
+expand_mode = 1
+
+[node name="LeftBooth" type="Control" parent="."]
+layout_mode = 0
+offset_top = 482.0
+offset_right = 620.0
+offset_bottom = 866.0
+scale = Vector2(0.62, 0.62)
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="LeftBooth"]
+layout_mode = 0
+offset_right = 620.0
+offset_bottom = 384.0
+mouse_filter = 2
+texture = ExtResource("11_booth_left")
+expand_mode = 1
+
+[node name="Hacker" parent="LeftBooth" instance=ExtResource("3_character")]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 6.0
+offset_right = 437.0
+offset_bottom = 389.0
+texture = ExtResource("4_hacker_mask")
+sprite_frames = ExtResource("5_hacker_frames")
+rest_animation = &"idle"
+
+[node name="RightBooth" type="Control" parent="."]
+layout_mode = 0
+offset_left = 898.0
+offset_top = 482.0
+offset_right = 1514.0
+offset_bottom = 866.0
+scale = Vector2(0.62, 0.62)
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="RightBooth"]
+layout_mode = 0
+offset_right = 616.0
+offset_bottom = 384.0
+mouse_filter = 2
+texture = ExtResource("12_booth_right")
+expand_mode = 1
+
+[node name="Player" parent="RightBooth" instance=ExtResource("3_character")]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 6.0
+offset_right = 532.0
+offset_bottom = 421.0
+texture = ExtResource("6_defender_mask")
+sprite_frames = ExtResource("7_defender_frames")
+rest_animation = &"working"
+
+[node name="Locks" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 498.0
+offset_top = 540.0
+offset_right = 782.0
+offset_bottom = 652.0
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Green" type="TextureRect" parent="Locks"]
+custom_minimum_size = Vector2(84, 112)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_lock_green")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Yellow" type="TextureRect" parent="Locks"]
+custom_minimum_size = Vector2(84, 112)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("9_lock_yellow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Red" type="TextureRect" parent="Locks"]
+custom_minimum_size = Vector2(84, 112)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("10_lock_red")
+expand_mode = 1
+stretch_mode = 5

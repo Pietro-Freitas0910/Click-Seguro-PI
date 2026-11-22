@@ -1,0 +1,157 @@
+[gd_resource type="SpriteFrames" load_steps=18 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/defender_frames.png" id="1_sheet"]
+
+[sub_resource type="AtlasTexture" id="frame_00"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 0, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_01"]
+atlas = ExtResource("1_sheet")
+region = Rect2(274, 0, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_02"]
+atlas = ExtResource("1_sheet")
+region = Rect2(548, 0, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_03"]
+atlas = ExtResource("1_sheet")
+region = Rect2(822, 0, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_04"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 232, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_05"]
+atlas = ExtResource("1_sheet")
+region = Rect2(274, 232, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_06"]
+atlas = ExtResource("1_sheet")
+region = Rect2(548, 232, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_07"]
+atlas = ExtResource("1_sheet")
+region = Rect2(822, 232, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_08"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 464, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_09"]
+atlas = ExtResource("1_sheet")
+region = Rect2(274, 464, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_10"]
+atlas = ExtResource("1_sheet")
+region = Rect2(548, 464, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_11"]
+atlas = ExtResource("1_sheet")
+region = Rect2(822, 464, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_12"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 696, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_13"]
+atlas = ExtResource("1_sheet")
+region = Rect2(274, 696, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_14"]
+atlas = ExtResource("1_sheet")
+region = Rect2(548, 696, 274, 232)
+
+[sub_resource type="AtlasTexture" id="frame_15"]
+atlas = ExtResource("1_sheet")
+region = Rect2(822, 696, 274, 232)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("frame_00")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_01")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_02")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_01")
+}, {
+"duration": 2.0,
+"texture": SubResource("frame_00")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_15")
+}],
+"loop": true,
+"name": &"working",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("frame_04")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_05")
+}, {
+"duration": 4.0,
+"texture": SubResource("frame_07")
+}],
+"loop": false,
+"name": &"protected",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 4.0,
+"texture": SubResource("frame_08")
+}],
+"loop": false,
+"name": &"cautious",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("frame_09")
+}, {
+"duration": 2.0,
+"texture": SubResource("frame_10")
+}, {
+"duration": 4.0,
+"texture": SubResource("frame_11")
+}],
+"loop": false,
+"name": &"attacked",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("frame_12")
+}, {
+"duration": 2.0,
+"texture": SubResource("frame_13")
+}, {
+"duration": 2.0,
+"texture": SubResource("frame_14")
+}, {
+"duration": 1.0,
+"texture": SubResource("frame_13")
+}],
+"loop": true,
+"name": &"victory",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("frame_10")
+}, {
+"duration": 2.0,
+"texture": SubResource("frame_11")
+}],
+"loop": true,
+"name": &"defeat",
+"speed": 2.0
+}]

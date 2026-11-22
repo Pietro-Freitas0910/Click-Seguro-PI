@@ -1,0 +1,191 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/components/stage.tscn" id="2_stage"]
+[ext_resource type="Texture2D" path="res://assets/images/icon.svg" id="90_icon"]
+[ext_resource type="Material" path="res://assets/shaders/screen_fx_material.tres" id="91_screen_fx"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Stage" parent="." instance=ExtResource("2_stage")]
+unique_name_in_owner = true
+
+[node name="Screen" type="Control" parent="."]
+clip_contents = true
+layout_mode = 0
+offset_left = 113.0
+offset_right = 1167.0
+offset_bottom = 429.0
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="Screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.02, 0.06, 0.15)
+
+[node name="Window" type="VBoxContainer" parent="Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_top = 50.0
+offset_right = -90.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TitleBar" type="PanelContainer" parent="Screen/Window"]
+layout_mode = 2
+theme_type_variation = &"WindowTitle"
+
+[node name="HBox" type="HBoxContainer" parent="Screen/Window/TitleBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("90_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WindowTitleLabel" type="Label" parent="Screen/Window/TitleBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"WindowTitleLabel"
+text = "Click Seguro"
+
+[node name="Min" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 3)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.7, 0.8, 0.9, 0.8)
+
+[node name="Max" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.7, 0.8, 0.9, 0.25)
+
+[node name="Close" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.9, 0.3, 0.32, 0.9)
+
+[node name="Body" type="PanelContainer" parent="Screen/Window"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"WindowBody"
+
+[node name="VBox" type="VBoxContainer" parent="Screen/Window/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+theme_override_font_sizes/font_size = 15
+text = "CENTRAL DE DEFESA DIGITAL"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 58
+text = "Click Seguro"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Cada escolha protege seus dados."
+horizontal_alignment = 1
+
+[node name="RecordLabel" type="Label" parent="Screen/Window/Body/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+theme_override_font_sizes/font_size = 15
+text = "Recorde: 0"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Screen/Window/Body/VBox"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+
+[node name="ActionFrame" type="HBoxContainer" parent="Screen/Window/Body/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="Screen/Window/Body/VBox/ActionFrame"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+text = "INICIAR DEFESA"
+
+[node name="ExitButton" type="Button" parent="Screen/Window/Body/VBox/ActionFrame"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+text = "SAIR"
+
+[node name="ScreenFlash" type="ColorRect" parent="Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ScreenFx" type="ColorRect" parent="Screen"]
+material = ExtResource("91_screen_fx")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Taskbar" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 930.0
+offset_top = 429.0
+offset_right = 1167.0
+offset_bottom = 461.0
+theme_type_variation = &"TaskbarPanel"
+
+[node name="SoundButton" type="Button" parent="Taskbar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 14
+text = "SOM: LIGADO"
+flat = true

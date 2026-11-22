@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/screen_fx.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/line_spacing = 3.0
+shader_parameter/line_alpha = 0.1
+shader_parameter/glare_strength = 0.07
+shader_parameter/edge_shadow = 0.45
+shader_parameter/sweep_speed = 0.08

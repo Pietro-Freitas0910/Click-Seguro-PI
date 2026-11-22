@@ -1,0 +1,340 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/components/stage.tscn" id="2_stage"]
+[ext_resource type="Texture2D" path="res://assets/images/icon.svg" id="90_icon"]
+[ext_resource type="Material" path="res://assets/shaders/screen_fx_material.tres" id="91_screen_fx"]
+[ext_resource type="Script" path="res://scripts/ui/typewriter_label.gd" id="3_typewriter"]
+[ext_resource type="Script" path="res://scripts/ui/challenge_view.gd" id="4_challenge_view"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Stage" parent="." instance=ExtResource("2_stage")]
+unique_name_in_owner = true
+
+[node name="Screen" type="Control" parent="."]
+clip_contents = true
+layout_mode = 0
+offset_left = 113.0
+offset_right = 1167.0
+offset_bottom = 429.0
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="Screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.02, 0.06, 0.15)
+
+[node name="Window" type="VBoxContainer" parent="Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 12.0
+offset_right = -30.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TitleBar" type="PanelContainer" parent="Screen/Window"]
+layout_mode = 2
+theme_type_variation = &"WindowTitle"
+
+[node name="HBox" type="HBoxContainer" parent="Screen/Window/TitleBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("90_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WindowTitleLabel" type="Label" parent="Screen/Window/TitleBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"WindowTitleLabel"
+text = "Central de Defesa  -  Click Seguro"
+
+[node name="Min" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 3)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.7, 0.8, 0.9, 0.8)
+
+[node name="Max" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.7, 0.8, 0.9, 0.25)
+
+[node name="Close" type="ColorRect" parent="Screen/Window/TitleBar/HBox"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.9, 0.3, 0.32, 0.9)
+
+[node name="Body" type="PanelContainer" parent="Screen/Window"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"WindowBody"
+
+[node name="VBox" type="VBoxContainer" parent="Screen/Window/Body"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TopRow" type="HBoxContainer" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ChallengeCounterLabel" type="Label" parent="Screen/Window/Body/VBox/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+theme_override_font_sizes/font_size = 15
+text = "1/6"
+vertical_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="Screen/Window/Body/VBox/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Contexto do desafio"
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("3_typewriter")
+seconds_per_char = 0.015
+typing_sound = true
+
+[node name="ListenButton" type="Button" parent="Screen/Window/Body/VBox/TopRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 30)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 14
+text = "OUVIR"
+
+[node name="Middle" type="HBoxContainer" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="ChallengeView" type="PanelContainer" parent="Screen/Window/Body/VBox/Middle"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("4_challenge_view")
+
+[node name="Actions" type="VBoxContainer" parent="Screen/Window/Body/VBox/Middle"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="AbrirButton" type="Button" parent="Screen/Window/Body/VBox/Middle/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+text = "ABRIR"
+
+[node name="IgnorarButton" type="Button" parent="Screen/Window/Body/VBox/Middle/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
+text = "IGNORAR"
+
+[node name="DenunciarButton" type="Button" parent="Screen/Window/Body/VBox/Middle/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.45, 1, 0.72, 1)
+text = "DENUNCIAR"
+
+[node name="BloquearButton" type="Button" parent="Screen/Window/Body/VBox/Middle/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.55, 0.88, 1, 1)
+text = "BLOQUEAR"
+
+[node name="FeedbackRow" type="HBoxContainer" parent="Screen/Window/Body/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FeedbackPanel" type="PanelContainer" parent="Screen/Window/Body/VBox/FeedbackRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"FeedbackPanel"
+
+[node name="FeedbackLabel" type="Label" parent="Screen/Window/Body/VBox/FeedbackRow/FeedbackPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Analise a mensagem e escolha uma ação."
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("3_typewriter")
+seconds_per_char = 0.012
+
+[node name="ContinueButton" type="Button" parent="Screen/Window/Body/VBox/FeedbackRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "CONTINUAR"
+
+[node name="Tutorial" type="Control" parent="Screen"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Shade" type="ColorRect" parent="Screen/Tutorial"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.01, 0.03, 0.75)
+
+[node name="Panel" type="PanelContainer" parent="Screen/Tutorial"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.12
+anchor_top = 0.06
+anchor_right = 0.88
+anchor_bottom = 0.94
+theme_type_variation = &"WindowBody"
+
+[node name="VBox" type="VBoxContainer" parent="Screen/Tutorial/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Screen/Tutorial/Panel/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "COMO JOGAR"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Screen/Tutorial/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 19
+text = "1. Leia a mensagem que chegou no computador.
+2. Procure pistas: remetente estranho, pressa, pedido de senha, código ou dinheiro.
+3. Escolha uma ação nos botões da direita.
+4. Errou? O hacker avança e um cadeado se apaga. Perdeu os 3 cadeados, o sistema é invadido.
+
+Cuidado: nem toda mensagem é golpe!"
+autowrap_mode = 3
+
+[node name="OkButton" type="Button" parent="Screen/Tutorial/Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "ENTENDI"
+
+[node name="ScreenFlash" type="ColorRect" parent="Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ScreenFx" type="ColorRect" parent="Screen"]
+material = ExtResource("91_screen_fx")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Taskbar" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 429.0
+offset_right = 1167.0
+offset_bottom = 461.0
+theme_type_variation = &"TaskbarPanel"
+
+[node name="Tray" type="HBoxContainer" parent="Taskbar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SoundButton" type="Button" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "SOM: LIGADO"
+flat = true
+
+[node name="ScoreLabel" type="Label" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_type_variation = &"TaskbarLabel"
+theme_override_colors/font_color = Color(0.35, 1, 0.62, 1)
+text = "Pontos: 0"
+vertical_alignment = 1
+
+[node name="LivesLabel" type="Label" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TaskbarLabel"
+text = "Vidas: 3/3"
+vertical_alignment = 1
+
+[node name="ThreatTitle" type="Label" parent="Taskbar/Tray"]
+layout_mode = 2
+theme_type_variation = &"TaskbarLabel"
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+text = "Ameaça"
+vertical_alignment = 1
+
+[node name="ThreatBar" type="ProgressBar" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
