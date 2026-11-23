@@ -176,16 +176,36 @@ mouse_filter = 2
 
 [node name="Taskbar" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_left = 930.0
+offset_left = 500.0
 offset_top = 429.0
 offset_right = 1167.0
 offset_bottom = 461.0
 theme_type_variation = &"TaskbarPanel"
 
-[node name="SoundButton" type="Button" parent="Taskbar"]
+[node name="Tray" type="HBoxContainer" parent="Taskbar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="TextSizeButton" type="Button" parent="Taskbar/Tray"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 8
+tooltip_text = "Deixa as letras das mensagens maiores"
+theme_override_font_sizes/font_size = 14
+text = "LETRA: NORMAL"
+flat = true
+
+[node name="TextSpeedButton" type="Button" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Velocidade com que o texto aparece na tela"
+theme_override_font_sizes/font_size = 14
+text = "TEXTO: NORMAL"
+flat = true
+
+[node name="SoundButton" type="Button" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "SOM: LIGADO"
 flat = true

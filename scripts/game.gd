@@ -1,8 +1,8 @@
 extends Control
 ## Tela principal da partida.
 ##
-## A cada rodada chega uma mensagem no computador (e-mail, WhatsApp, SMS,
-## ligação...). O jogador escolhe uma ação, vê as pistas destacadas e o
+## A cada rodada chega uma mensagem no computador (e-mail, mensagens, SMS,
+## ligação, QR Code, boleto...). O jogador escolhe uma ação, vê as pistas destacadas e o
 ## feedback, e aperta CONTINUAR quando terminar de ler.
 
 enum Result { BEST, SAFE, NEUTRAL, UNSAFE }
@@ -10,6 +10,14 @@ enum Result { BEST, SAFE, NEUTRAL, UNSAFE }
 const END_SCENE: String = "res://scenes/end_screen.tscn"
 const MAX_LIVES: int = 3
 const THREAT_STEP: int = 34
+const MENU_SCENE: String = "res://scenes/main_menu.tscn"
+## Quantas vezes procurar a voz em português (no navegador ela demora a carregar).
+const TTS_ATTEMPTS: int = 12
+const TTS_RETRY_SECONDS: float = 0.5
+## Tempo para confirmar a saída com um segundo clique no botão MENU.
+const MENU_CONFIRM_SECONDS: float = 3.0
+const PROMPT_FONT_SIZE: int = 18
+const FEEDBACK_FONT_SIZE: int = 17
 
 const COLOR_INFO := Color(0.45, 0.85, 1.0)
 const COLOR_BEST := Color(0.3, 1.0, 0.56)
@@ -33,6 +41,9 @@ var _waiting_answer: bool = false
 var _shown_score: int = 0
 var _feedback_style: StyleBoxFlat
 var _tts_voice: String = ""
+var _round_started: bool = false
+var _menu_armed: bool = false
+var _menu_arm_id: int = 0
 
 @onready var stage: Stage = %Stage
 @onready var hacker: SceneCharacter = stage.hacker
@@ -52,6 +63,8 @@ var _tts_voice: String = ""
 @onready var sound_button: Button = %SoundButton
 @onready var tutorial: Control = %Tutorial
 @onready var tutorial_ok_button: Button = %OkButton
+@onready var help_button: Button = %HelpButton
+@onready var menu_button: Button = %MenuButton
 @onready var action_buttons: Dictionary = {
 	"Abrir": %AbrirButton,
 	"Ignorar": %IgnorarButton,
@@ -68,11 +81,14 @@ func _ready() -> void:
 	listen_button.pressed.connect(_speak_challenge)
 	sound_button.pressed.connect(_toggle_sound)
 	tutorial_ok_button.pressed.connect(_close_tutorial)
+	help_button.pressed.connect(_open_tutorial)
+	menu_button.pressed.connect(_on_menu_pressed)
 
 	_feedback_style = feedback_panel.get_theme_stylebox("panel").duplicate()
 	feedback_panel.add_theme_stylebox_override("panel", _feedback_style)
 	_setup_tts()
 	_update_sound_button()
+	_apply_text_size()
 
 	GameState.start_run()
 	challenges = Challenges.pick_round()
@@ -88,6 +104,7 @@ func _ready() -> void:
 # --- Fluxo da partida ---------------------------------------------------------
 
 func _load_challenge() -> void:
+	_round_started = true
 	var challenge: Dictionary = challenges[challenge_index]
 	challenge_counter_label.text = "%d/%d" % [challenge_index + 1, challenges.size()]
 	prompt_label.type_text(challenge["prompt"])
@@ -149,7 +166,7 @@ func _next_challenge() -> void:
 
 
 func _classify(challenge: Dictionary, action: String) -> Result:
-	if action == challenge["best"]:
+	if Challenges.is_best(challenge, action):
 		return Result.BEST
 	if challenge["safe"].has(action):
 		return Result.SAFE
@@ -165,10 +182,23 @@ func _finish_game(did_win: bool) -> void:
 
 # --- Tutorial, som e leitura em voz alta ----------------------------------------
 
+## Aumenta o texto do contexto e do feedback quando "Letra grande" está ligada.
+## (O texto da mensagem em si é ajustado pelo ChallengeView.)
+func _apply_text_size() -> void:
+	var text_scale: float = GameState.text_scale()
+	prompt_label.add_theme_font_size_override("font_size", roundi(PROMPT_FONT_SIZE * text_scale))
+	feedback_label.add_theme_font_size_override("font_size", roundi(FEEDBACK_FONT_SIZE * text_scale))
+
+
+## Abre o "Como jogar". Na primeira vez aparece sozinho; depois, pelo botão AJUDA.
 func _open_tutorial() -> void:
+	if tutorial.visible:
+		return
+	_stop_speaking()
 	tutorial.visible = true
 	tutorial.modulate.a = 0.0
-	create_tween().tween_property(tutorial, "modulate:a", 1.0, 0.3).set_delay(0.3)
+	var delay: float = 0.0 if _round_started else 0.3
+	create_tween().tween_property(tutorial, "modulate:a", 1.0, 0.3).set_delay(delay)
 	tutorial_ok_button.grab_focus()
 
 
@@ -177,7 +207,26 @@ func _close_tutorial() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(tutorial, "modulate:a", 0.0, 0.2)
 	tween.tween_callback(func() -> void: tutorial.visible = false)
-	_load_challenge()
+	# Se a partida já começou, só fecha a ajuda e volta para o mesmo desafio.
+	if not _round_started:
+		_load_challenge()
+
+
+## Voltar ao menu pede um segundo clique, para ninguém perder a partida sem querer.
+func _on_menu_pressed() -> void:
+	if _menu_armed:
+		_stop_speaking()
+		SceneTransition.change_scene(MENU_SCENE)
+		return
+	_menu_armed = true
+	_menu_arm_id += 1
+	var arm_id: int = _menu_arm_id
+	menu_button.text = "SAIR MESMO?"
+	_pop(menu_button, COLOR_NEUTRAL)
+	await get_tree().create_timer(MENU_CONFIRM_SECONDS).timeout
+	if is_inside_tree() and arm_id == _menu_arm_id:
+		_menu_armed = false
+		menu_button.text = "MENU"
 
 
 func _toggle_sound() -> void:
@@ -190,12 +239,19 @@ func _update_sound_button() -> void:
 
 
 ## Usa a voz do navegador/sistema, se existir uma em português.
+## No navegador a lista de vozes chega alguns instantes depois de a página
+## abrir, então o jogo tenta de novo por alguns segundos antes de desistir.
 func _setup_tts() -> void:
-	var voices: PackedStringArray = DisplayServer.tts_get_voices_for_language("pt")
-	if voices.is_empty():
-		listen_button.visible = false
-	else:
-		_tts_voice = voices[0]
+	listen_button.visible = false
+	for _attempt in TTS_ATTEMPTS:
+		var voices: PackedStringArray = DisplayServer.tts_get_voices_for_language("pt")
+		if not voices.is_empty():
+			_tts_voice = voices[0]
+			listen_button.visible = true
+			return
+		await get_tree().create_timer(TTS_RETRY_SECONDS).timeout
+		if not is_inside_tree():
+			return
 
 
 func _speak_challenge() -> void:

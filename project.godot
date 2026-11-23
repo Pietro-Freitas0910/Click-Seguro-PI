@@ -13,10 +13,10 @@ config_version=5
 config/name="Click Seguro"
 config/description="Jogo educativo sobre ética digital e segurança na internet."
 run/main_scene="res://scenes/main_menu.tscn"
-config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://assets/images/icon.svg"
+config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0.012, 0.02, 0.035, 1)
 boot_splash/show_image=false
+config/icon="res://assets/images/icon.svg"
 
 [audio]
 
@@ -33,7 +33,6 @@ SceneTransition="*res://scripts/autoload/scene_transition.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 
 [gui]
 
@@ -41,7 +40,7 @@ theme/custom="res://assets/ui/theme.tres"
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.012, 0.02, 0.035, 1)

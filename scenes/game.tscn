@@ -252,12 +252,12 @@ horizontal_alignment = 1
 [node name="Text" type="Label" parent="Screen/Tutorial/Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 19
-text = "1. Leia a mensagem que chegou no computador.
-2. Procure pistas: remetente estranho, pressa, pedido de senha, código ou dinheiro.
-3. Escolha uma ação nos botões da direita.
-4. Errou? O hacker avança e um cadeado se apaga. Perdeu os 3 cadeados, o sistema é invadido.
+theme_override_font_sizes/font_size = 18
+text = "1. Leia a mensagem e procure pistas: remetente estranho, pressa, pedido de senha, código ou dinheiro.
+2. Escolha uma ação nos botões da direita. Depois, as pistas aparecem marcadas e explicadas.
+3. Errou? Um cadeado se apaga. Sem os 3 cadeados, o hacker invade o sistema.
 
+DENUNCIAR avisa a empresa e protege outras pessoas. BLOQUEAR impede o contato de voltar. Nos golpes, os dois valem nota máxima.
 Cuidado: nem toda mensagem é golpe!"
 autowrap_mode = 3
 
@@ -338,3 +338,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 show_percentage = false
+
+[node name="HelpButton" type="Button" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Ver de novo como jogar"
+theme_override_font_sizes/font_size = 14
+text = "AJUDA"
+flat = true
+
+[node name="MenuButton" type="Button" parent="Taskbar/Tray"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Voltar ao menu (a partida atual é perdida)"
+theme_override_font_sizes/font_size = 14
+text = "MENU"
+flat = true

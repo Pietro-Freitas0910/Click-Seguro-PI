@@ -159,14 +159,21 @@ alignment = 1
 
 [node name="PlayAgainButton" type="Button" parent="Screen/Window/Body/VBox/ActionFrame"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 42)
+custom_minimum_size = Vector2(230, 42)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "JOGAR NOVAMENTE"
 
+[node name="CertificateButton" type="Button" parent="Screen/Window/Body/VBox/ActionFrame"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+text = "CERTIFICADO"
+
 [node name="MenuButton" type="Button" parent="Screen/Window/Body/VBox/ActionFrame"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 42)
+custom_minimum_size = Vector2(230, 42)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "VOLTAR AO MENU"

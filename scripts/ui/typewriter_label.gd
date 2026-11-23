@@ -10,6 +10,7 @@ signal typing_finished
 @export var typing_sound: bool = false
 
 var _elapsed: float = 0.0
+var _seconds: float = 0.018
 var _last_sound_char: int = 0
 
 
@@ -19,6 +20,12 @@ func _ready() -> void:
 
 func type_text(value: String) -> void:
 	text = value
+	# A opção de velocidade do texto vale para todo o jogo (NA HORA = sem digitar).
+	var factor: float = GameState.typing_factor()
+	if factor <= 0.0:
+		finish_typing()
+		return
+	_seconds = seconds_per_char * factor
 	visible_characters = 0
 	_elapsed = 0.0
 	_last_sound_char = 0
@@ -33,7 +40,7 @@ func finish_typing() -> void:
 
 func _process(delta: float) -> void:
 	_elapsed += delta
-	var count: int = int(_elapsed / seconds_per_char)
+	var count: int = int(_elapsed / _seconds)
 	if count >= get_total_character_count():
 		finish_typing()
 		return

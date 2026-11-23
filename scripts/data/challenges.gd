@@ -3,14 +3,18 @@ class_name Challenges
 ##
 ## Campos de cada desafio:
 ##   id        -> nome único
-##   kind      -> como aparece na tela: "email", "chat", "sms", "call", "file", "login"
+##   kind      -> como aparece na tela: "email", "chat", "sms", "call", "file",
+##                "login", "qr" (QR Code em cartaz) ou "boleto"
 ##   title     -> nome curto (aparece no relatório final)
 ##   prompt    -> contexto/pergunta mostrado acima da mensagem
 ##   content   -> o que aparece dentro do "aplicativo" (depende do kind, veja challenge_view.gd)
-##   clues     -> campos do content que são pistas; ficam destacados depois da resposta
+##   clues     -> { campo do content: "por que isso é uma pista" }. Depois da resposta,
+##                cada campo fica destacado com a explicação ao lado. Nas mensagens
+##                verdadeiras, as "pistas" explicam por que a mensagem é confiável.
 ##   legit     -> true se a mensagem é verdadeira (não é golpe)
 ##   labels    -> (opcional) texto diferente para algum botão nesta situação
-##   best / safe / neutral -> classificação das ações (o que sobrar é inseguro e tira vida)
+##   best      -> ações que valem nota máxima (pode ter mais de uma)
+##   safe / neutral -> as outras classificações (o que sobrar é inseguro e tira vida)
 ##   feedback  -> explicação curta para cada ação
 ##   tip       -> dica de prevenção mostrada no relatório final
 
@@ -21,9 +25,22 @@ const DEFAULT_LABELS: Dictionary = {
 	"Denunciar": "DENUNCIAR",
 	"Bloquear": "BLOQUEAR",
 }
+## Nome de cada tipo de desafio, usado no histórico e no certificado.
+const KIND_NAMES: Dictionary = {
+	"email": "E-mail",
+	"chat": "Mensagens",
+	"sms": "SMS",
+	"call": "Ligação",
+	"file": "Arquivo",
+	"login": "Alerta de acesso",
+	"qr": "QR Code",
+	"boleto": "Boleto",
+}
 const ROUND_SIZE: int = 6
-## Quantas mensagens verdadeiras entram em cada partida.
-const LEGIT_PER_ROUND: int = 1
+## Quantas mensagens verdadeiras entram em cada partida (sorteado entre os dois).
+## Assim o jogador não consegue "decorar" que sempre existe exatamente uma.
+const MIN_LEGIT_PER_ROUND: int = 0
+const MAX_LEGIT_PER_ROUND: int = 2
 
 const BANK: Array[Dictionary] = [
 	{
@@ -38,15 +55,19 @@ const BANK: Array[Dictionary] = [
 			"body": "Prezado cliente, detectamos irregularidades. Para evitar o bloqueio, confirme sua senha em até 2 horas no link abaixo.",
 			"link": "bancoseguro-alerta.xyz/confirmar-senha",
 		},
-		"clues": ["from_addr", "subject", "link"],
+		"clues": {
+			"from_addr": "O endereço termina em .xyz, não é o site do banco.",
+			"subject": "Pressa e ameaça de bloqueio para você não pensar.",
+			"link": "O link pede a sua senha. Banco nunca faz isso.",
+		},
 		"labels": {"Abrir": "CLICAR NO LINK"},
-		"best": "Denunciar",
-		"safe": ["Bloquear"],
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
-			"Denunciar": "O endereço é estranho, há pressa e pedem senha: é golpe. Denunciar protege outras pessoas.",
-			"Bloquear": "Bloquear o remetente é seguro, mas denunciar também ajuda a derrubar o golpe.",
-			"Ignorar": "Não clicar já evita o golpe, mas denunciar seria mais completo.",
+			"Denunciar": "Endereço estranho, pressa e pedido de senha: é golpe. Denunciar avisa o serviço de e-mail e protege outras pessoas.",
+			"Bloquear": "Endereço estranho, pressa e pedido de senha: é golpe. Bloquear impede que esse remetente escreva de novo.",
+			"Ignorar": "Não clicar já evita o golpe, mas denunciar ou bloquear seria mais completo.",
 			"Abrir": "O link leva a um site falso que rouba sua senha.",
 		},
 		"tip": "Banco nunca pede senha por e-mail. Desconfie de pressa e de endereços estranhos. Na dúvida, abra o aplicativo oficial do banco.",
@@ -54,8 +75,8 @@ const BANK: Array[Dictionary] = [
 	{
 		"id": "chat_premio",
 		"kind": "chat",
-		"title": "Prêmio falso no WhatsApp",
-		"prompt": "Um número desconhecido mandou mensagem no WhatsApp.",
+		"title": "Prêmio falso por mensagem",
+		"prompt": "Um número desconhecido mandou mensagem no aplicativo de mensagens.",
 		"content": {
 			"contact": "+55 11 9 8765-0000",
 			"messages": [
@@ -63,16 +84,19 @@ const BANK: Array[Dictionary] = [
 				"Para receber, envie seu CPF e o código de 6 números que chegou por SMS.",
 			],
 		},
-		"clues": ["contact", "messages"],
+		"clues": {
+			"contact": "Número que você não conhece.",
+			"messages": "Prêmio de um sorteio que você não entrou e pedido do código do SMS.",
+		},
 		"labels": {"Abrir": "ENVIAR DADOS"},
-		"best": "Denunciar",
-		"safe": ["Bloquear"],
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
-			"Denunciar": "Prêmio de sorteio que você não participou + pedido de código = golpe. Denunciar ajuda a derrubar o número.",
-			"Bloquear": "Bloquear impede novas mensagens desse número.",
+			"Denunciar": "Prêmio que você não pediu + pedido de código = golpe. Denunciar ajuda a derrubar esse número.",
+			"Bloquear": "Prêmio que você não pediu + pedido de código = golpe. Bloquear impede novas mensagens desse número.",
 			"Ignorar": "Ignorar evita o golpe, mas o número continua enganando outras pessoas.",
-			"Abrir": "Com o código do SMS, o golpista consegue roubar o seu WhatsApp.",
+			"Abrir": "Com o código do SMS, o golpista consegue roubar a sua conta de mensagens.",
 		},
 		"tip": "Nunca passe códigos recebidos por SMS. Ninguém ganha prêmio de sorteio em que não se inscreveu.",
 	},
@@ -84,68 +108,76 @@ const BANK: Array[Dictionary] = [
 		"content": {
 			"contact": "+55 21 9 9123-4567",
 			"messages": [
-				"Oi mãe, troquei de número! Salva esse.",
+				"Oi! Sou eu, troquei de número. Salva esse.",
 				"Tô com um problema no banco, consegue fazer um Pix de R$ 1.800 pra um amigo? Te devolvo amanhã.",
 			],
 		},
-		"clues": ["contact", "messages"],
+		"clues": {
+			"contact": "Número novo, não é o que está salvo na sua agenda.",
+			"messages": "Pede dinheiro com pressa e para a conta de outra pessoa.",
+		},
 		"labels": {"Abrir": "FAZER O PIX"},
-		"best": "Bloquear",
-		"safe": ["Denunciar"],
+		"best": ["Bloquear", "Denunciar"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Bloquear": "Número novo pedindo dinheiro é o golpe do falso parente. Bloqueie e ligue para o número antigo do seu filho.",
-			"Denunciar": "Denunciar também ajuda. Depois, confirme ligando para o número antigo.",
+			"Denunciar": "Número novo pedindo dinheiro é o golpe do falso parente. Denuncie e confirme ligando para o número antigo.",
 			"Ignorar": "Não pagar evita o prejuízo, mas confirme com a família por outro meio.",
 			"Abrir": "O dinheiro vai para o golpista e dificilmente volta.",
 		},
 		"tip": "Se um parente pedir dinheiro de um número novo, ligue para o número antigo ou pergunte algo que só ele saberia.",
 	},
 	{
-		"id": "sms_correios",
+		"id": "sms_entrega",
 		"kind": "sms",
 		"title": "SMS de entrega com taxa",
 		"prompt": "Você recebeu um SMS sobre uma encomenda.",
 		"content": {
 			"sender": "40028",
-			"text": "CORREIOS: sua encomenda foi retida. Pague a taxa de R$ 9,90 para liberar: corr3ios-entrega.top/taxa",
+			"text": "ENTREGAS BR: sua encomenda foi retida. Pague a taxa de R$ 9,90 para liberar: entregas-br4sil.top/taxa",
 		},
-		"clues": ["text"],
+		"clues": {
+			"text": "O link troca letras (br4sil) e cobra uma taxa por mensagem.",
+		},
 		"labels": {"Abrir": "PAGAR A TAXA"},
-		"best": "Denunciar",
-		"safe": ["Bloquear"],
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
-			"Denunciar": "O link imita o nome dos Correios com letras trocadas. Denunciar ajuda a operadora a bloquear.",
-			"Bloquear": "Bloquear o número é seguro.",
-			"Ignorar": "Ignorar evita o golpe, mas denunciar seria melhor.",
+			"Denunciar": "O link imita o nome da transportadora com letras trocadas. Denunciar ajuda a operadora a bloquear o golpe.",
+			"Bloquear": "O link imita o nome da transportadora com letras trocadas. Bloquear o número é seguro.",
+			"Ignorar": "Ignorar evita o golpe, mas denunciar ou bloquear seria melhor.",
 			"Abrir": "O site falso rouba os dados do seu cartão.",
 		},
-		"tip": "Confira encomendas só no site ou aplicativo oficial. Links com letras trocadas (corr3ios) são falsos.",
+		"tip": "Confira encomendas só no site ou aplicativo oficial da loja ou da transportadora. Links com letras trocadas (br4sil) são falsos.",
 	},
 	{
 		"id": "file_exe",
 		"kind": "file",
 		"title": "Arquivo com vírus",
-		"prompt": "Um contato desconhecido mandou um arquivo.",
+		"prompt": "Um contato desconhecido mandou um arquivo para o seu computador.",
 		"content": {
 			"sender": "desconhecido_2024",
 			"message": "olha essas fotos da festa kkkk abre logo",
 			"file_name": "fotos_festa.exe",
 			"file_size": "2,4 MB",
 		},
-		"clues": ["file_name", "sender"],
+		"clues": {
+			"file_name": "Termina em .exe: é um programa, não uma foto.",
+			"sender": "Contato que você não conhece.",
+		},
 		"labels": {"Abrir": "ABRIR ARQUIVO"},
-		"best": "Denunciar",
-		"safe": ["Bloquear"],
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Denunciar": "Foto não termina em .exe! É um programa disfarçado. Denunciar ajuda a impedir o vírus.",
-			"Bloquear": "Bloquear evita novas tentativas desse remetente.",
-			"Ignorar": "Não abrir já protege, mas denunciar é melhor.",
+			"Bloquear": "Foto não termina em .exe! É um programa disfarçado. Bloquear evita novas tentativas.",
+			"Ignorar": "Não abrir já protege, mas denunciar ou bloquear é melhor.",
 			"Abrir": "Arquivos .exe instalam programas. Esse poderia sequestrar seu computador.",
 		},
-		"tip": "Fotos terminam em .jpg ou .png. Nunca abra arquivos .exe, .bat ou .scr que você não esperava.",
+		"tip": "Fotos terminam em .jpg ou .png. Nunca abra arquivos .exe, .bat ou .scr (no computador) nem .apk (no celular) que você não esperava.",
 	},
 	{
 		"id": "call_suporte",
@@ -157,15 +189,17 @@ const BANK: Array[Dictionary] = [
 			"number": "0800 000 0000",
 			"speech": "Olá, aqui é do suporte do seu aplicativo. Para proteger sua conta, me diga o código que acabamos de enviar.",
 		},
-		"clues": ["speech"],
+		"clues": {
+			"speech": "Pede o código que chegou para você. Suporte de verdade nunca pede.",
+		},
 		"labels": {"Abrir": "PASSAR O CÓDIGO"},
-		"best": "Bloquear",
-		"safe": ["Denunciar"],
+		"best": ["Bloquear", "Denunciar"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Bloquear": "Suporte de verdade nunca pede o código. Bloquear o número corta a tentativa.",
-			"Denunciar": "Denunciar o número também ajuda outras pessoas.",
-			"Ignorar": "Não passar o código protege você, mas bloquear é melhor.",
+			"Denunciar": "Suporte de verdade nunca pede o código. Denunciar o número ajuda outras pessoas.",
+			"Ignorar": "Não passar o código protege você, mas bloquear ou denunciar é melhor.",
 			"Abrir": "Com esse código, o golpista entra na sua conta.",
 		},
 		"tip": "Códigos de verificação são só seus. Nenhuma empresa liga pedindo esse número.",
@@ -174,21 +208,24 @@ const BANK: Array[Dictionary] = [
 		"id": "login_estranho",
 		"kind": "login",
 		"title": "Login de outro lugar",
-		"prompt": "Seu e-mail mostrou um alerta. Você está em casa, no seu computador.",
+		"prompt": "Seu e-mail mostrou um alerta. Você está em casa, em Londrina, no seu computador.",
 		"content": {
 			"service": "Conta de E-mail",
 			"device": "Computador desconhecido",
-			"location": "Lagos, Nigéria",
+			"location": "Porto Velho, RO",
 			"time": "agora mesmo",
 		},
-		"clues": ["location", "device"],
+		"clues": {
+			"location": "Uma cidade onde você não está.",
+			"device": "Um aparelho que não é o seu.",
+		},
 		"labels": {"Abrir": "FUI EU", "Bloquear": "NÃO FUI EU"},
-		"best": "Bloquear",
+		"best": ["Bloquear"],
 		"safe": ["Denunciar"],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Bloquear": "Não foi você, então alguém tem sua senha. Bloqueie e troque a senha.",
-			"Denunciar": "Avisar o serviço ajuda, mas também troque sua senha agora.",
+			"Denunciar": "Avisar o serviço ajuda, mas também clique em NÃO FUI EU e troque sua senha agora.",
 			"Ignorar": "Sem agir, o invasor continua dentro da sua conta.",
 			"Abrir": "Você acabou de liberar o acesso para um invasor.",
 		},
@@ -206,14 +243,18 @@ const BANK: Array[Dictionary] = [
 			"body": "Últimas 3 unidades! Pague no Pix agora e garanta o seu. Promoção válida por 15 minutos.",
 			"link": "megaloja-ofertas.click/pix",
 		},
-		"clues": ["subject", "body", "from_addr"],
+		"clues": {
+			"subject": "Preço impossível: 95% de desconto.",
+			"body": "Pressa (15 minutos) e pagamento só no Pix.",
+			"from_addr": "Loja que você não conhece, com endereço estranho.",
+		},
 		"labels": {"Abrir": "COMPRAR"},
-		"best": "Denunciar",
-		"safe": ["Bloquear"],
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Denunciar": "Preço impossível + pressa + só Pix = loja falsa. Denunciar ajuda outras pessoas.",
-			"Bloquear": "Bloquear o remetente é seguro.",
+			"Bloquear": "Preço impossível + pressa + só Pix = loja falsa. Bloquear o remetente é seguro.",
 			"Ignorar": "Não comprar evita o prejuízo.",
 			"Abrir": "O produto nunca chega e o Pix não tem como ser cancelado.",
 		},
@@ -229,18 +270,155 @@ const BANK: Array[Dictionary] = [
 			"number": "(11) 4000-1234",
 			"speech": "Identificamos uma compra de R$ 3.200 no seu cartão. Para cancelar, instale o aplicativo que vamos mandar por mensagem.",
 		},
-		"clues": ["speech"],
+		"clues": {
+			"speech": "Susto com uma compra + pedido para instalar aplicativo. Banco não faz isso.",
+		},
 		"labels": {"Abrir": "INSTALAR APP"},
-		"best": "Bloquear",
-		"safe": ["Denunciar"],
+		"best": ["Bloquear", "Denunciar"],
+		"safe": [],
 		"neutral": ["Ignorar"],
 		"feedback": {
 			"Bloquear": "Banco não pede para instalar aplicativo por telefone. Desligue e ligue você mesmo para o número do cartão.",
-			"Denunciar": "Denunciar ajuda. Depois, ligue para o número que está atrás do seu cartão.",
+			"Denunciar": "Banco não pede para instalar aplicativo por telefone. Denuncie e ligue para o número atrás do seu cartão.",
 			"Ignorar": "Não instalar protege você, mas confirme com o banco pelo número oficial.",
 			"Abrir": "Esse aplicativo dá ao golpista o controle do seu celular.",
 		},
 		"tip": "Se o banco ligar, desligue e ligue você mesmo para o número oficial atrás do cartão.",
+	},
+	{
+		"id": "qr_estacionamento",
+		"kind": "qr",
+		"title": "QR Code falso no estacionamento",
+		"prompt": "Você estacionou na rua e um cartaz pede o pagamento por QR Code.",
+		"content": {
+			"title": "ESTACIONAMENTO ROTATIVO",
+			"subtitle": "Pague aqui no Pix: R$ 15,00 por hora.",
+			"note": "Olhando de perto, o código é um adesivo colado por cima do cartaz.",
+			"link": "estaciona-pix.top/pagar",
+			"receiver": "Pix para: Marcos A. Silva",
+		},
+		"clues": {
+			"note": "Adesivo colado por cima: alguém trocou o código original.",
+			"link": "Site estranho, não é o da prefeitura nem da empresa.",
+			"receiver": "O dinheiro vai para uma pessoa, não para a empresa.",
+		},
+		"labels": {"Abrir": "PAGAR NO PIX", "Ignorar": "NÃO PAGAR", "Denunciar": "AVISAR O FISCAL", "Bloquear": "PAGAR NO APP OFICIAL"},
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
+		"neutral": ["Ignorar"],
+		"feedback": {
+			"Denunciar": "O código foi trocado por um adesivo. Avisar o fiscal ajuda a tirar o golpe da rua.",
+			"Bloquear": "Pagar pelo aplicativo oficial evita o código falso. Ótima escolha!",
+			"Ignorar": "Você não caiu no golpe, mas pode levar multa. Pague pelo aplicativo oficial.",
+			"Abrir": "O Pix foi para o golpista. Antes de pagar, sempre confira o nome de quem recebe.",
+		},
+		"tip": "Antes de pagar um QR Code, confira se não é adesivo colado e se o nome de quem recebe é o da empresa.",
+	},
+	{
+		"id": "boleto_condominio",
+		"kind": "boleto",
+		"title": "Boleto adulterado",
+		"prompt": "Você pediu a 2ª via do boleto do condomínio Residencial Flores. Chegou este, por mensagem.",
+		"content": {
+			"origin": "Enviado por: +55 43 9 9988-1122 (número desconhecido)",
+			"beneficiary": "J S Cobranças Rápidas ME",
+			"amount": "R$ 640,00",
+			"due": "HOJE",
+			"barcode": "99990.12345 67890.123456 78901.234567 1 98760000064000",
+		},
+		"clues": {
+			"origin": "Veio de um número que não é o da administradora.",
+			"beneficiary": "O nome de quem recebe não é o do condomínio.",
+			"due": "Vencimento para hoje, para você pagar sem conferir.",
+		},
+		"labels": {"Abrir": "PAGAR", "Ignorar": "NÃO PAGAR", "Denunciar": "AVISAR O SÍNDICO", "Bloquear": "BLOQUEAR O NÚMERO"},
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
+		"neutral": ["Ignorar"],
+		"feedback": {
+			"Denunciar": "O beneficiário não é o condomínio: boleto adulterado. Avisar o síndico protege os vizinhos.",
+			"Bloquear": "O beneficiário não é o condomínio: boleto adulterado. Bloqueie e peça o boleto pelo canal oficial.",
+			"Ignorar": "Não pagar evita o golpe. Peça o boleto certo na administradora.",
+			"Abrir": "O dinheiro foi para o golpista e o condomínio continua sem pagar.",
+		},
+		"tip": "Antes de pagar um boleto, confira no aplicativo do banco se o nome do beneficiário é o da empresa. Peça boletos só pelos canais oficiais.",
+	},
+	{
+		"id": "chat_emprego",
+		"kind": "chat",
+		"title": "Falso emprego",
+		"prompt": "Você recebeu uma proposta de trabalho por mensagem, sem ter procurado vaga.",
+		"content": {
+			"contact": "Vagas RH Online",
+			"messages": [
+				"Olá! Vaga home office: ganhe R$ 300 por dia só curtindo vídeos.",
+				"Para liberar sua vaga, pague a taxa de cadastro de R$ 49,90 no Pix.",
+			],
+		},
+		"clues": {
+			"contact": "Empresa que você nunca procurou.",
+			"messages": "Dinheiro fácil demais e uma taxa para começar.",
+		},
+		"labels": {"Abrir": "PAGAR A TAXA"},
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
+		"neutral": ["Ignorar"],
+		"feedback": {
+			"Denunciar": "Emprego de verdade não cobra para contratar. Denunciar ajuda a derrubar o golpe.",
+			"Bloquear": "Emprego de verdade não cobra para contratar. Bloquear impede novas mensagens.",
+			"Ignorar": "Não pagar evita o golpe, mas denunciar ou bloquear seria melhor.",
+			"Abrir": "Depois da taxa, eles pedem mais dinheiro e o 'salário' nunca chega.",
+		},
+		"tip": "Vaga de verdade não cobra taxa de cadastro. Desconfie de ganho fácil demais.",
+	},
+	{
+		"id": "sms_beneficio",
+		"kind": "sms",
+		"title": "Falso aviso da aposentadoria",
+		"prompt": "Você recebe aposentadoria e chegou este SMS.",
+		"content": {
+			"sender": "28077",
+			"text": "PREVIDENCIA: seu benefício será SUSPENSO amanhã. Atualize seu cadastro agora: recadastro-beneficio.online",
+		},
+		"clues": {
+			"text": "Ameaça de corte e link que não termina em .gov.br.",
+		},
+		"labels": {"Abrir": "ATUALIZAR CADASTRO"},
+		"best": ["Denunciar", "Bloquear"],
+		"safe": [],
+		"neutral": ["Ignorar"],
+		"feedback": {
+			"Denunciar": "Site do governo termina em .gov.br. Esse link rouba seus dados. Denunciar ajuda outras pessoas.",
+			"Bloquear": "Site do governo termina em .gov.br. Esse link rouba seus dados. Bloquear o número é seguro.",
+			"Ignorar": "Não clicar evita o golpe. Se ficar com dúvida, confira no aplicativo oficial.",
+			"Abrir": "O site falso rouba seus dados e pode pedir empréstimos no seu nome.",
+		},
+		"tip": "Sites do governo terminam em .gov.br. Cadastro e prova de vida se fazem no aplicativo oficial ou na agência, nunca por link de SMS.",
+	},
+	{
+		"id": "call_consignado",
+		"kind": "call",
+		"title": "Falso empréstimo consignado",
+		"prompt": "Você está recebendo uma ligação.",
+		"content": {
+			"caller": "Crédito Fácil",
+			"number": "(43) 3000-5566",
+			"speech": "Seu empréstimo consignado com juros baixinhos já está aprovado! Só preciso confirmar seu CPF, o número do benefício e uma foto do seu documento.",
+		},
+		"clues": {
+			"speech": "Empréstimo que você não pediu + pedido de documentos por telefone.",
+		},
+		"labels": {"Abrir": "PASSAR OS DADOS"},
+		"best": ["Bloquear", "Denunciar"],
+		"safe": [],
+		"neutral": ["Ignorar"],
+		"feedback": {
+			"Bloquear": "Ninguém aprova empréstimo que você não pediu. Bloquear o número corta a tentativa.",
+			"Denunciar": "Ninguém aprova empréstimo que você não pediu. Denunciar ajuda outras pessoas.",
+			"Ignorar": "Não passar os dados protege você, mas bloquear ou denunciar é melhor.",
+			"Abrir": "Com seus documentos, o golpista faz empréstimos no seu nome.",
+		},
+		"tip": "Ninguém aprova empréstimo que você não pediu. Nunca passe CPF, número do benefício ou foto de documento por telefone.",
 	},
 	# --- Mensagens VERDADEIRAS (não são golpe) ---
 	{
@@ -251,18 +429,21 @@ const BANK: Array[Dictionary] = [
 		"content": {
 			"contact": "Pedro (neto)",
 			"messages": [
-				"Oi vó! Domingo eu chego pro almoço, tá?",
-				"Vou levar aquele bolo que a senhora gosta!",
+				"Oi! Domingo eu chego pro almoço, tá?",
+				"Vou levar aquele bolo que você gosta!",
 			],
 		},
-		"clues": [],
+		"clues": {
+			"contact": "Contato salvo na agenda há anos.",
+			"messages": "Não pede dinheiro, senha nem código.",
+		},
 		"legit": true,
 		"labels": {"Abrir": "RESPONDER"},
-		"best": "Abrir",
+		"best": ["Abrir"],
 		"safe": [],
 		"neutral": ["Ignorar", "Denunciar", "Bloquear"],
 		"feedback": {
-			"Abrir": "Contato conhecido, sem pedir dinheiro, dados ou códigos. Pode responder tranquila!",
+			"Abrir": "Contato conhecido, sem pedir dinheiro, dados ou códigos. Pode responder com tranquilidade!",
 			"Ignorar": "Não era golpe! Contato conhecido, sem pedir nada.",
 			"Denunciar": "Não era golpe! Nem toda mensagem é perigosa.",
 			"Bloquear": "Não era golpe! Você bloqueou seu próprio neto.",
@@ -275,13 +456,15 @@ const BANK: Array[Dictionary] = [
 		"title": "Código que você pediu",
 		"prompt": "Você acabou de pedir um código para entrar no aplicativo do banco, no seu celular.",
 		"content": {
-			"sender": "BANCO",
+			"sender": "SEU BANCO",
 			"text": "Seu código de acesso é 482913. Não compartilhe com ninguém.",
 		},
-		"clues": [],
+		"clues": {
+			"text": "Foi você que pediu agora, e a mensagem não pede nada.",
+		},
 		"legit": true,
 		"labels": {"Abrir": "USAR O CÓDIGO"},
-		"best": "Abrir",
+		"best": ["Abrir"],
 		"safe": [],
 		"neutral": ["Ignorar", "Denunciar", "Bloquear"],
 		"feedback": {
@@ -304,10 +487,13 @@ const BANK: Array[Dictionary] = [
 			"body": "Olá! Seu ventilador já está a caminho. Acompanhe a entrega no aplicativo da loja. Não pedimos dados ou pagamentos por e-mail.",
 			"link": "",
 		},
-		"clues": [],
+		"clues": {
+			"from_addr": "Endereço oficial da loja onde você comprou.",
+			"body": "Combina com a sua compra e não pede dados nem pagamento.",
+		},
 		"legit": true,
 		"labels": {"Abrir": "LER E-MAIL"},
-		"best": "Abrir",
+		"best": ["Abrir"],
 		"safe": [],
 		"neutral": ["Ignorar", "Denunciar", "Bloquear"],
 		"feedback": {
@@ -318,10 +504,64 @@ const BANK: Array[Dictionary] = [
 		},
 		"tip": "Mensagem verdadeira combina com algo que você fez, vem do endereço oficial e não pede senha nem pagamento.",
 	},
+	{
+		"id": "legit_consulta",
+		"kind": "sms",
+		"title": "Lembrete de consulta",
+		"prompt": "Ontem você marcou uma consulta na Clínica Bem Viver.",
+		"content": {
+			"sender": "CLINICA",
+			"text": "Clínica Bem Viver: lembrete da sua consulta amanhã, às 9h. Para remarcar, ligue para o telefone de sempre da clínica.",
+		},
+		"clues": {
+			"text": "Combina com a consulta que você marcou e não pede dados, link nem pagamento.",
+		},
+		"legit": true,
+		"labels": {"Abrir": "LER"},
+		"best": ["Abrir"],
+		"safe": [],
+		"neutral": ["Ignorar", "Denunciar", "Bloquear"],
+		"feedback": {
+			"Abrir": "É só um lembrete da consulta que você marcou. Pode ler com tranquilidade!",
+			"Ignorar": "Não era golpe! Era o lembrete da sua consulta.",
+			"Denunciar": "Não era golpe! A clínica só lembrou da consulta.",
+			"Bloquear": "Não era golpe! Agora você não recebe mais lembretes da clínica.",
+		},
+		"tip": "Lembrete verdadeiro combina com algo que você marcou e manda você usar o contato de sempre, sem link nem pagamento.",
+	},
+	{
+		"id": "legit_boleto_luz",
+		"kind": "boleto",
+		"title": "Conta de luz verdadeira",
+		"prompt": "Você entrou no site oficial da companhia de energia e baixou a sua conta de luz.",
+		"content": {
+			"origin": "Baixado por você no site oficial da companhia",
+			"beneficiary": "Luz Forte Energia S.A.",
+			"amount": "R$ 187,40",
+			"due": "10/12",
+			"barcode": "99990.00001 23456.789012 34567.890123 4 99990000018740",
+		},
+		"clues": {
+			"origin": "Você mesmo baixou no site oficial.",
+			"beneficiary": "O nome de quem recebe é o da companhia de energia.",
+		},
+		"legit": true,
+		"labels": {"Abrir": "PAGAR", "Ignorar": "NÃO PAGAR"},
+		"best": ["Abrir"],
+		"safe": [],
+		"neutral": ["Ignorar", "Denunciar", "Bloquear"],
+		"feedback": {
+			"Abrir": "Você baixou no site oficial e o beneficiário é a companhia. Pode pagar com segurança.",
+			"Ignorar": "Não era golpe! E a conta de luz pode atrasar.",
+			"Denunciar": "Não era golpe! O boleto é da companhia de energia.",
+			"Bloquear": "Não era golpe! Era a sua conta de luz.",
+		},
+		"tip": "Boleto confiável é o que você baixou no site ou aplicativo oficial, com o nome da empresa como beneficiário.",
+	},
 ]
 
 
-## Sorteia os desafios de uma partida: LEGIT_PER_ROUND verdadeiros + o resto golpes.
+## Sorteia os desafios de uma partida: de MIN a MAX verdadeiros + o resto golpes.
 static func pick_round() -> Array[Dictionary]:
 	var scams: Array[Dictionary] = []
 	var legit: Array[Dictionary] = []
@@ -333,8 +573,9 @@ static func pick_round() -> Array[Dictionary]:
 	scams.shuffle()
 	legit.shuffle()
 
+	var legit_count: int = randi_range(MIN_LEGIT_PER_ROUND, MAX_LEGIT_PER_ROUND)
 	var round_list: Array[Dictionary] = []
-	round_list.append_array(legit.slice(0, LEGIT_PER_ROUND))
+	round_list.append_array(legit.slice(0, legit_count))
 	round_list.append_array(scams.slice(0, ROUND_SIZE - round_list.size()))
 	round_list.shuffle()
 	return round_list
@@ -342,3 +583,8 @@ static func pick_round() -> Array[Dictionary]:
 
 static func label_for(challenge: Dictionary, action: String) -> String:
 	return challenge.get("labels", {}).get(action, DEFAULT_LABELS[action])
+
+
+## true quando a ação é uma das respostas ideais do desafio.
+static func is_best(challenge: Dictionary, action: String) -> bool:
+	return (challenge["best"] as Array).has(action)

@@ -132,13 +132,13 @@ func bounce(amount: float = 0.04) -> void:
 
 func _show_frame(index: int) -> void:
 	_frame = index
-	var texture: Texture2D = sprite_frames.get_frame_texture(_animation, index)
-	if texture == _front.texture:
+	var frame_texture: Texture2D = sprite_frames.get_frame_texture(_animation, index)
+	if frame_texture == _front.texture:
 		return
 
 	# Transição suave: o quadro antigo fica atrás e o novo aparece por cima.
 	_back.texture = _front.texture
-	_front.texture = texture
+	_front.texture = frame_texture
 	if _fade_tween:
 		_fade_tween.kill()
 	if crossfade_time <= 0.0 or _back.texture == null:
